@@ -1,11 +1,12 @@
 FROM centos:7
-EXPOSE 3000
+EXPOSE 8080
 ENV SOURCES=/sources
 RUN yum update -y
 RUN yum install -y file gcc openssl-devel
-RUN curl -sSf https://static.rust-lang.org/rustup.sh | sh -s -- --channel=nightly --disable-sudo
+RUN curl https://sh.rustup.rs -sSf > install.sh
+RUN sh ./install.sh -y
 RUN mkdir -p $SOURCES
 ADD ./ $SOURCES
 WORKDIR $SOURCES
-RUN cargo build --release
-CMD ROCKET_ENV=production ./target/release/rust-gae-gcb
+RUN $HOME/.cargo/bin/cargo build --release
+CMD ./target/release/rust-gae-gcb
